@@ -15,6 +15,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/oxford2/estimate-back#readme",
   "dependencies": {
+    "jira-search": "^0.1.2",
     "socket.io": "^2.0.4"
   },
   "devDependencies": {
