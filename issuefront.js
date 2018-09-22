@@ -5,7 +5,7 @@ class IssueFront{
     constructor(id, summary){
         this.issueId = id;
         this.summary = summary;
-        this.shortSummary = summary.substring(IssueFront.LENGTH_SHORT_SUMMARY); 
+        this.shortSummary = this.summary.substr(0, IssueFront.LENGTH_SHORT_SUMMARY); 
     }
 
     get getIssueId(){
@@ -16,6 +16,9 @@ class IssueFront{
     }
     get getShortSummary(){
         return this.shortSummary;
+    }
+    description(){
+        return this.issueId + ", " + this.summary + ", " + this.shortSummary;
     }
 }
 

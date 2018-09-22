@@ -19,6 +19,13 @@ class JiraApi{
 	get getHost(){
 		return this.host;
 	}
+	get getIssues(){
+		return this.jiraIssues;
+	}
+	
+	description(){
+		return this.host + ", " + this.username + ", ";
+	}
 }
 
 module.exports = JiraApi;
