@@ -11,7 +11,6 @@ var jiraproject = "ToTylkoDoPobrania";
 
 const MAX_CHARS_SHORT_SUMARY = 32;
 var issuesForFront = getIssuesFromJira("loginJakisWymyslony",jiraurl,jiralogin,jirapassword,jiraproject);
-console.log(issuesForFront);
 
 function getIssuesFromJira(login,jiraurl,jiralogin,jirapassword,jiraproject){
 	search({ 
