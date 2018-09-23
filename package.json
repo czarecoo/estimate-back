@@ -17,10 +17,11 @@
   "dependencies": {
     "jira-search": "^0.1.2",
     "simple-id": "^1.0.0",
+    "request": "^2.88.0",
     "socket.io": "^2.0.4",
     "superagent": "^4.0.0-beta.5"
   },
   "devDependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.3"
   }
 }
