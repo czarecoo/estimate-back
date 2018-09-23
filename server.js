@@ -45,11 +45,11 @@ function disconnect() {
 }
 
 function updateJiraIssue(jiraUrl, jiraLogin, jiraPassword, issueIdOrKey, update) {
-	var url = jiraUrl + "/rest/api/3/issue/" + issueIdOrKey + "/editmeta";
+	var url = jiraUrl + "/rest/api/3/issue/" + issueIdOrKey;
 
 	request({
 		url: url,
-		method: "GET",
+		method: "PUT",
 		json: true,
 		body: update,
 		auth: { user: jiraLogin, pass: jiraPassword }
