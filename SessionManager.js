@@ -7,15 +7,18 @@ class SessionManager {
 	}
 	createSession(creator) {
 		var id = this.generateSessionId();
+		creator.sessionId = id;
 		this.sessions.set(id, {
 			sessionId: id,
 			creator: creator,
-			users: new Set(),
+			users: [],
 			stories: []
 		})
+		this.sessions.get(id).users.push(creator);
 	}
 	createSessionWithJira(creator, issues, jiraUrl, jiraProject) {
 		var id = this.generateSessionId();
+		creator.sessionId = id;
 		this.sessions.set(id, {
 			sessionId: id,
 			creator: creator,
@@ -24,6 +27,7 @@ class SessionManager {
 			jiraUrl: jiraUrl,
 			jiraProject: jiraProject
 		});
+		this.sessions.get(id).users.push(creator);
 	}
 	generateSessionId(){
 		while(true){

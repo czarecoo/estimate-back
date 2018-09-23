@@ -1,11 +1,11 @@
 class UserManager {
-	static createCreator(userName) {
-		var creator = UserManager.createUser(userName);
+	static createCreator(userName, socketid) {
+		var creator = UserManager.createUser(userName, socketid);
 		creator.isCreator = true;
 		return creator;
 	}
-	static createUser(userName) {
-		var user = { name: userName, isActive: true, isCreator: false };
+	static createUser(userName, socketid) {
+		var user = { name: userName, isActive: true, isCreator: false, socketid: socketid };
 		return user;
 	}
 }

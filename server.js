@@ -36,16 +36,16 @@ io.on('connection', function (socket) {
 	socket.on("finalVote", finalVote(story));
 });
 
-function createSession(userName) {
+function createSession(userName, socketid) {
 	console.log("createSession");
-	var creator = UserManager.createCreator(userName);
+	var creator = UserManager.createCreator(userName, socketid);
 	SessionManager.createSession(creator);
 }
 
-function createSessionWithJira(userName, jiraLogin, jiraPassword, jiraUrl, jiraProject) {
+function createSessionWithJira(userName, jiraLogin, jiraPassword, jiraUrl, jiraProject, socketid) {
 	console.log("createSessionWithJira");
 	var issuesPromise = JiraManager.getIssues(jiraLogin, jiraPassword, jiraUrl, jiraProject);
-	var creator = UserManager.createCreator(userName);
+	var creator = UserManager.createCreator(userName, socketid);
 	issuesPromise.then(function (issues) {
 		try{
 			console.log(issues);
@@ -60,6 +60,7 @@ function createSessionWithJira(userName, jiraLogin, jiraPassword, jiraUrl, jiraP
 function joinSession(userName, serverId) {
 	var user = UserManager.createUser(userName);
 	if(SessionManager.sessions.has(serverId)){
+		user.sessionId = serverId;
 		SessionManager.sessions.get(serverId).users.push(user);
 		//io.emit("grejt dżojn my frind", greatJoin);
 	}
@@ -69,28 +70,39 @@ function joinSession(userName, serverId) {
 }
 
 function closeSession(sessionId){
+	for(var user of SessionManager.sessions.get(sessionId).users){
+		//emit do kazdego ziomka
+		//trza dac socketa juserowi
+	}
 	SessionManager.sessions.delete(sessionId);
 	SessionManager.setOfSessionIds.delete(sessionId);
 }
 
-function vote(story, voteVal){
-
+function vote(story, voteVal, sessionId){
+	for(var user of SessionManager.sessions.get(sessionId).users){
+		//emit do kazdego ziomka, ze inny ziomeczek puscil walju dla story
+	}
 }
 
 function coffee(sessionId){
-
+	for(var user of SessionManager.sessions.get(sessionId).users){
+		//emit z kofibrejkiem
+	}
 }
 
-function kickUser(user){
-	
+function kickUser(user, sessionId){
+	user.socketid.emit("kickUser");
+	for(var user of SessionManager.sessions.get(sessionId).users){
+		updateFrontUser(user);
+	}
 }
 
 function passCreator(story){
 
 }
 
-function finishStory(story){
-
+function finishStory(story, sessionId){
+	
 }
 
 function markAsFuture(story){
@@ -98,7 +110,7 @@ function markAsFuture(story){
 }
 
 function revoteStory(story){
-
+	
 }
 
 function addEmptyStory(story){
@@ -111,6 +123,17 @@ function savesStory(){
 
 function finalVote(){
 
+}
+
+function updateFrontUsers(session){
+	for(var user of session.users){
+		updateFrontUser(user);
+	}
+}
+
+function updateFrontUser(user){
+	var updateSession = SessionManager.sessions.get(user.sessionId);
+	user.socketid.emit("update", updateSession.users, updateSession.stories );
 }
 
 function disconnect() {
