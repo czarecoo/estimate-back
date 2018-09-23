@@ -1,6 +1,3 @@
-//const User = require('./user.js')
-//const Session = require('./session.js')
-
 class SessionManager {
 	constructor() {
 		this.sessions = [];
