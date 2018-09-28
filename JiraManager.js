@@ -1,5 +1,6 @@
 const search = require('jira-search');
 const MAX_CHARS_SHORT_SUMARY = 32;
+const request = require('request');
 
 class JiraManager {
 	static getIssues(jiraLogin, jiraPassword, jiraUrl, jiraProject) {
@@ -17,6 +18,27 @@ class JiraManager {
 				}
 			}
 		})
+	}
+	static updateJiraIssue(jiraUrl, jiraLogin, jiraPassword, issueIdOrKey) {
+		var url = jiraUrl + "/rest/api/3/issue/" + issueIdOrKey;
+		var update = {
+			"fields": {
+				"customfield_10020": 3,
+			}
+		};
+
+		request({
+			url: url,
+			method: "PUT",
+			json: true,
+			body: update,
+			auth: { user: jiraLogin, pass: jiraPassword }
+		}, function (error, response, body) {
+			console.log('error:', error); // Print the error if one occurred
+			console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+			console.log('body:', body); // Print the HTML for the Google homepage.
+		}
+		);
 	}
 }
 
