@@ -6,7 +6,10 @@ const port = 8080;
 const SessionFunctions = require("./SessionFunctions.js");
 const StoryFunctions = require("./StoryFunctions.js");
 const UpdateFunctions = require("./UpdateFunctions.js");
-const PingerFunctions = require("./PingerFunctions.js");
+const IntervalFunctions = require("./IntervalFunctions.js");
+var SessionManager = require('./SessionManager.js');
+SessionManager.sessions = new Map();
+SessionManager.setOfSessionIds = new Set();
 
 server.listen(port, function () {
 	console.log("Listening on: " + port);
@@ -16,7 +19,10 @@ server.listen(port, function () {
 io.on("connection", function (socket) {
 	console.log("Connected with socketid: ", socket.id);
 
-	socket.on("createSessionRequest", (creatorName) => console.log("createSessionRequest", creatorName));
+	socket.on("createSessionRequest", (creatorName) => {
+		console.log("createSessionRequest", creatorName);
+		SessionFunctions.createSession(creatorName, socket.id);
+	});
 	socket.on("createSessionWithJiraRequest", (creatorName, jiraLogin, jiraPassword, jiraUrl, jiraProject) => console.log("createSessionWithJiraRequest", creatorName, jiraLogin, jiraPassword, jiraUrl, jiraProject));
 	socket.on("joinSessionRequest", (creatorName, serverId) => console.log("joinSessionRequest", creatorName, serverId));
 	socket.on("closeSessionRequest", () => console.log("closeSessionRequest"));
@@ -58,3 +64,8 @@ io.on("connection", function (socket) {
 function disconnect() {
 	console.log("Disconnected");
 }
+
+//pinger
+IntervalFunctions.doPingRequest(io);
+//IntervalFunctions.doUpdate();
+IntervalFunctions.doLogger();

@@ -1,25 +1,21 @@
 const simpleid = require("simple-id");
 
-class SessionManager {
-	constructor() {
-		this.sessions = new Map();
-		this.setOfSessionIds = new Set();
-	}
-	createSession(creator) {
-		var id = this.generateSessionId();
+class SessionManager {	
+	static createSession(creator) {
+		var id = SessionManager.generateSessionId();
 		creator.sessionId = id;
-		this.sessions.set(id, {
+		SessionManager.sessions.set(id, {
 			sessionId: id,
 			creator: creator,
 			users: [],
 			stories: []
 		})
-		this.sessions.get(id).users.push(creator);
+		SessionManager.sessions.get(id).users.push(creator);
 	}
-	createSessionWithJira(creator, issues, jiraUrl, jiraProject) {
-		var id = this.generateSessionId();
+	static createSessionWithJira(creator, issues, jiraUrl, jiraProject) {
+		var id = SessionManager.generateSessionId();
 		creator.sessionId = id;
-		this.sessions.set(id, {
+		SessionManager.sessions.set(id, {
 			sessionId: id,
 			creator: creator,
 			users: [],
@@ -27,13 +23,13 @@ class SessionManager {
 			jiraUrl: jiraUrl,
 			jiraProject: jiraProject
 		});
-		this.sessions.get(id).users.push(creator);
+		SessionManager.sessions.get(id).users.push(creator);
 	}
-	generateSessionId(){
+	static generateSessionId(){
 		while(true){
 			var id = simpleid(8, '123456789abcdefghijklmnoprstuwxyz');
-			if( !this.setOfSessionIds.has(id) ){ 
-				this.setOfSessionIds.add(id); 
+			if( !SessionManager.setOfSessionIds.has(id) ){ 
+				SessionManager.setOfSessionIds.add(id); 
 				return id; 
 			} 
 		}

@@ -1,19 +1,24 @@
+const UpdateFunctions = require('./UpdateFunctions.js');
+const SessionManager = require('./SessionManager.js');
+
 class StoryFunctions{
     //te funkcje musza stąd znikanąć najlepiej do jakiejs klasy jako funkcje statyczne
     static vote(story, voteVal, sessionId) {
+        
         for (var user of SessionManager.sessions.get(sessionId).users) {
             //emit do kazdego ziomka, ze inny ziomeczek puscil walju dla story
             //user.socketid.emit
         }
+        //UpdateFunctions.
     }
 
-    static coffee(sessionId) {
+    static coffee(sessionId, io) {
         for (var user of SessionManager.sessions.get(sessionId).users) {
-            //emit z kofibrejkiem
+            io.to(user.socketid).emit("coffeeResponse");
         }
     }
 
-    static kickUser(user) {
+    static kickUser(user, io) {
         io.to(user.socketid).emit("kickUser");
         for (var user of SessionManager.sessions.get(sessionId).users) {
             updateFrontUser(user);
