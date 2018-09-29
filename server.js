@@ -4,6 +4,9 @@ const io = require("socket.io").listen(server);
 
 const port = 8080;
 const SessionFunctions = require("./SessionFunctions.js");
+const StoryFunctions = require("./StoryFunctions.js");
+const UpdateFunctions = require("./UpdateFunctions.js");
+const PingerFunctions = require("./PingerFunctions.js");
 
 server.listen(port, function () {
 	console.log("Listening on: " + port);
@@ -51,77 +54,6 @@ io.on("connection", function (socket) {
 	}, 5000);
 	*/
 });
-
-//te funkcje musza stąd znikanąć najlepiej do jakiejs klasy jako funkcje statyczne
-function vote(story, voteVal, sessionId) {
-	for (var user of SessionManager.sessions.get(sessionId).users) {
-		//emit do kazdego ziomka, ze inny ziomeczek puscil walju dla story
-		//user.socketid.emit
-	}
-}
-
-function coffee(sessionId) {
-	for (var user of SessionManager.sessions.get(sessionId).users) {
-		//emit z kofibrejkiem
-	}
-}
-
-function kickUser(user, sessionId) {
-	user.socketid.emit("kickUser");
-	for (var user of SessionManager.sessions.get(sessionId).users) {
-		updateFrontUser(user);
-	}
-}
-
-function passCreator(story, sessionId, newCreator) {
-	if (SessionManager.sessions.has(sessionId)) {
-		for (var user of SessionManager.sessions.get(sessionId).users) {
-			if (user.name === newCreator.name) { //sprawdzamy czy jest taki user
-				SessionManager.sessions.get(sessionId).creator = user;
-			}
-		}
-	}
-}
-
-function finishStory(story, sessionId) {
-
-	updateFrontUsers(SessionManager.sessions.get(sessionId));
-}
-
-function markAsFuture(story, sessionId) {
-
-	updateFrontUsers(SessionManager.sessions.get(sessionId));
-}
-
-function revoteStory(story, sessionId) {
-
-	updateFrontUsers(SessionManager.sessions.get(sessionId));
-}
-
-function addEmptyStory(sessionId) { //jak dajemy empty to bez story
-
-	updateFrontUsers(SessionManager.sessions.get(sessionId));
-}
-
-function savesStory(story, sessionId) {
-
-	updateFrontUsers(SessionManager.sessions.get(sessionId));
-}
-
-function finalVote(story, sessionId) {
-
-	updateFrontUsers(SessionManager.sessions.get(sessionId));
-}
-
-function updateFrontUsers(session) {
-	for (var user of session.users) {
-		updateFrontUser(user, session);
-	}
-}
-
-function updateFrontUser(user, session) {
-	user.socketid.emit("update", session.users, session.stories);
-}
 
 function disconnect() {
 	console.log("Disconnected");
