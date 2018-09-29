@@ -1,5 +1,6 @@
 const UserManager = require('./UserManager.js');
 const JiraManager = require('./JiraManager.js');
+const SessionManager = require('./SessionManager.js');
 
 class SessionFunctions {
 	static createSession(userName, socketid) {
