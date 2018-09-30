@@ -1,40 +1,53 @@
 const simpleid = require("simple-id");
 
-class SessionManager {	
+class SessionManager {
 	static createSession(creator) {
 		var id = SessionManager.generateSessionId();
 		creator.sessionId = id;
 		SessionManager.sessions.set(id, {
 			sessionId: id,
-			creator: creator,
 			users: [],
-			stories: []
+			stories: [],
+			isJira: false,
 		})
 		SessionManager.sessions.get(id).users.push(creator);
+		return SessionManager.sessions.get(id);
 	}
-	static createSessionWithJira(creator, issues, jiraUrl, jiraProject) {
+	static createSessionWithJira(creator, issues, jiraLogin, jiraPassword, jiraUrl, jiraProject) {
 		var id = SessionManager.generateSessionId();
 		creator.sessionId = id;
 		SessionManager.sessions.set(id, {
 			sessionId: id,
-			creator: creator,
 			users: [],
 			stories: issues,
+			isJira: true,
+			jiraLogin: jiraLogin,
+			jiraPassword: jiraPassword,
 			jiraUrl: jiraUrl,
 			jiraProject: jiraProject
 		});
 		SessionManager.sessions.get(id).users.push(creator);
+		return SessionManager.sessions.get(id);
 	}
-	static generateSessionId(){
-		while(true){
-			var id = simpleid(8, '123456789abcdefghijklmnoprstuwxyz');
-			if( !SessionManager.setOfSessionIds.has(id) ){ 
-				SessionManager.setOfSessionIds.add(id); 
-				return id; 
-			} 
+	static generateSessionId() {
+		while (true) {
+			var id = simpleid(4, '1234');
+			if (!SessionManager.setOfSessionIds.has(id)) {
+				SessionManager.setOfSessionIds.add(id);
+				return id;
+			}
+		}
+	}
+	static getSessionBySocketId(socketId) {
+		var mapOfSessions = SessionManager.sessions;
+		for (var session of mapOfSessions.values()) {
+			for (var user of session.users) {
+				if (user.socketId == socketId) {
+					return session;
+				}
+			}
 		}
 	}
 }
 
-// session = {sessionId, users, stories, jiraUrl, jiraProject}
 module.exports = SessionManager;

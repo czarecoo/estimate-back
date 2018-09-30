@@ -1,26 +1,42 @@
 const UserManager = require('./UserManager.js');
 const JiraManager = require('./JiraManager.js');
 const SessionManager = require('./SessionManager.js');
+const UpdateFunctions = require('./UpdateFunctions.js');
 
 class SessionFunctions {
-	static createSession(userName, socketid) {
-		console.log("createSession");
-		var creator = UserManager.createCreator(userName, socketid);
-		SessionManager.createSession(creator);
+	static createSession(userName, socketId, io) {
+		var creator = UserManager.createCreator(userName, socketId);
+		var session = SessionManager.createSession(creator);
+		UpdateFunctions.updateFrontUsers(session, io);
 	}
-	static createSessionWithJira(userName, jiraLogin, jiraPassword, jiraUrl, jiraProject, socketid) {
-		console.log("createSessionWithJira");
+	static createSessionWithJira(userName, jiraLogin, jiraPassword, jiraUrl, jiraProject, socketId, io) {
 		var issuesPromise = JiraManager.getIssues(jiraLogin, jiraPassword, jiraUrl, jiraProject);
-		var creator = UserManager.createCreator(userName, socketid);
-		issuesPromise.then(function (issues) {
+		var creator = UserManager.createCreator(userName, socketId);
+
+		issuesPromise.then((issues) => {
+			for (var i = issues.length - 1; i >= 0; i--) {
+				if (issues[i] == null) {
+					issues.splice(i, 1);
+				}
+			}
 			try {
-				console.log(issues);
-				SessionManager.createSessionWithJira(creator, issues, jiraUrl, jiraProject);
-				console.log(SessionManager.sessions);
+				var session = SessionManager.createSessionWithJira(creator, issues, jiraLogin, jiraPassword, jiraUrl, jiraProject);
 			} catch (ex) {
 				console.log("Exception: " + ex.constructor.name + ", message: " + ex.message);
 			}
-		})
+			UpdateFunctions.updateFrontUsers(session, io);
+		});
+	}
+
+	static closeSession(socketId, io) {
+		var session = SessionManager.getSessionBySocketId(socketId);
+
+		//update jira issues
+		//JiraManager.updateJiraIssue(jiraUrl, jiraLogin, jiraPassword, "10004", update);
+
+		UpdateFunctions.kickFrontUsers(session, io);
+		SessionManager.sessions.delete(session.sessionId);
+		SessionManager.setOfSessionIds.delete(session.sessionId);
 	}
 
 	static joinSession(userName, serverId) {
@@ -33,25 +49,6 @@ class SessionFunctions {
 		else {
 			//io.emit("you are so stupid... wrong server id, bitch", wrongJoin);
 		}
-	}
-
-	static closeSession(sessionId) {
-		for (var user of SessionManager.sessions.get(sessionId).users) {
-			//emit do kazdego ziomka
-			//trza dac socketa juserowi
-		}
-		SessionManager.sessions.delete(sessionId);
-		SessionManager.setOfSessionIds.delete(sessionId);
-
-		//te dane musimy miec zapisane. Przy tworzeniu sesji z jira trzeba je gdzieś trzymać
-		/*
-		var jiraLogin = "adam96stan@gmail.com";
-		var jiraPassword = "Cedynia97@";
-		var jiraUrl = "https://adamjestem.atlassian.net";
-		var jiraProject = "ToTylkoDoPobrania";
-		var jiraProjectKey = "TOT";
-		*/
-		JiraManager.updateJiraIssue(jiraUrl, jiraLogin, jiraPassword, "10004", update);
 	}
 }
 

@@ -1,38 +1,54 @@
-class UpdateFuncions {
-    static updateFrontUsers(session, io) {
-        for (var user of session.users) {
-            if(user.isCreator){
-                UpdateFuncions.updateFrontCreator(user, session, io);
-                continue;
-            }
-            UpdateFuncions.updateFrontUser(user, session, io);
-        }
-    }
-    
-    static updateFrontCreator(creator, session, io){
-        var data = { //tylko poglądowo
-            login: "czareg",
-            userId: 1234,
-            sessionId: 134134,
-            isSuperUser: true,
-            currentStory: [{ tense: 0, issueId: "I-11119", summary: "AsdasdasdasdasdddbAsdasdasdasdasdddb", shortSummary: "Asdasdasdasdasdddb...", users: [{ name: "MICHAU" }, { name: "Robak" }], votes: [3, 5], finalScore: 0 }],
-            userList: [{ name: "Czareg", isActive: false, isCreator: true }, { name: "Wojteg", isActive: true, isCreator: false }],
-            futureStories: [{ tense: -1, issueId: "I-91919", summary: "blellbelleblelbblellbelleblelb", shortSummary: "blellbelleblelb..." }],
-            pastStories: [{ tense: 1, issueId: "I-42319", summary: "HelpHelpHelpHelpHelpHelpHelpHelpHelp", shortSummary: "Help...", users: [{ name: "Czareg" }, { name: "Bozena" }], votes: [0, 5], finalScore: 1 }]        
-        }
-        io.to(creator.socketid).emit("updateResponse", data);
-    }
+class UpdateFunctions {
+	static updateFrontUsers(session, io) {
+		for (var user of session.users) {
+			if (user.isCreator) {
+				UpdateFunctions.updateFrontCreator(user, session, io);
+			} else {
+				UpdateFunctions.updateFrontUser(user, session, io);
+			}
+		}
+	}
 
-    static updateFrontUser(user, session, io) {
-        var data = {
-            login: "czareg",
-            userId: 1234,
-            sessionId: 134134,
-            isSuperUser: false,
-            currentStory: [{ summary: "AsdasdasdasdasdddbAsdasdasdasdasdddb"}],
-            userList: [{ name: "Czareg", isActive: false, isCreator: true }, { name: "Wojteg", isActive: true, isCreator: false }],
-        }
-        io.to(user.socketid).emit("updateResponse", data);
-    }
+	static updateFrontCreator(creator, session, io) {
+		var data = {
+			login: creator.name,
+			userId: creator.userId,
+			sessionId: session.sessionId,
+			isSuperUser: creator.isCreator,
+			currentStory: UpdateFunctions.getStoriesWithTense(session.stories, 0),
+			userList: session.users,
+			futureStories: UpdateFunctions.getStoriesWithTense(session.stories, -1),
+			pastStories: UpdateFunctions.getStoriesWithTense(session.stories, 1),
+		}
+		io.to(creator.socketId).emit("updateResponse", data);
+	}
+
+	static updateFrontUser(user, session, io) {
+		var data = {
+			login: user.name,
+			userId: user.userId,
+			sessionId: session.sessionId,
+			isSuperUser: user.isCreator,
+			currentStory: UpdateFunctions.getStoriesWithTense(session.stories, 0),
+			userList: session.users,
+		}
+		io.to(user.socketId).emit("updateResponse", data);
+	}
+
+	static kickFrontUsers(session, io) {
+		for (var user of session.users) {
+			io.to(user.socketId).emit("sessionClosingCommand");
+		}
+	}
+
+	static getStoriesWithTense(stories, wantedTense) {
+		var tempArray = [];
+		for (var i = 0; i < stories.length; i++) {
+			if (stories[i].tense == wantedTense) {
+				tempArray.push(stories[i]);
+			}
+		}
+		return tempArray;
+	}
 }
-module.exports = UpdateFuncions;
+module.exports = UpdateFunctions;

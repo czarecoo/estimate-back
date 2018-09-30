@@ -12,9 +12,10 @@ class JiraManager {
 					if (shorterSummary.length > MAX_CHARS_SHORT_SUMARY) {
 						shorterSummary = issue.fields.summary.substring(0, MAX_CHARS_SHORT_SUMARY) + "..."
 					}
-					return { issueId: issue.id, summary: issue.fields.summary, shortSummary: shorterSummary };
+					return { issueId: issue.id, summary: issue.fields.summary, shortSummary: shorterSummary, tense: -1, users: [], votes: [], finalScore: 0 };
 				} else {
 					console.log("Rejecting: ", issue.id, " because it has estimate: ", issue.fields.customfield_10020);
+					return null;
 				}
 			}
 		})
