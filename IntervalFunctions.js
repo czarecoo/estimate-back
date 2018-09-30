@@ -1,5 +1,6 @@
 const SessionManager = require('./SessionManager.js');
 const util = require('util');
+const UpdateFunctions = require('./UpdateFunctions.js')
 class IntervalFunctions{
     static doPingRequest(io){
         setInterval(function(){//pinger
@@ -9,6 +10,9 @@ class IntervalFunctions{
                     var act = user.isActive;
                     if(act > 0){
                         user.isActive = act - 1;
+                    } 
+                    else {
+                        UpdateFunctions.updateFrontUsers(session, io);
                     }
                     io.to(user.socketId).emit('ping_request');
                 }
@@ -22,18 +26,6 @@ class IntervalFunctions{
             console.log(counter++);
             console.log(util.inspect(mapOfSessions, false, null));
         }, 5000);
-    }
-    static doUpdate(){
-        setInterval(function(){//updater
-            var mapOfSessions = Session.sessions;
-            for(var session of mapOfSessions.values()){
-                var arrayOfActiveUsers = session.users;
-                var arrayOfUsers = UserReq.makeArrayOfNicknameUsers(session.getMapOfUsers.values());
-                for(var user of session.mapOfUsers.values()){
-                    io.to(user.getSocketId).emit('user:change', arrayOfUsers, arrayOfActiveUsers, session.getSessionId);
-                }
-            }
-        }, 150);
     }
 }
 

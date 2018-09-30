@@ -5,7 +5,7 @@ class UpdateFuncions {
                 UpdateFuncions.updateFrontCreator(user, session, io);
                 continue;
             }
-            updateFrontUser(user, session, data, io);
+            UpdateFuncions.updateFrontUser(user, session, io);
         }
     }
     

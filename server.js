@@ -67,5 +67,4 @@ function disconnect() {
 
 //pinger
 IntervalFunctions.doPingRequest(io);
-//IntervalFunctions.doUpdate();
 IntervalFunctions.doLogger();
