@@ -41,6 +41,10 @@ class UpdateFunctions {
 		}
 	}
 
+	static kickUser(user, io) {
+		io.to(user.socketId).emit("sessionClosingCommand");
+	}
+
 	static getStoriesWithTense(stories, wantedTense) {
 		var tempArray = [];
 		for (var i = 0; i < stories.length; i++) {

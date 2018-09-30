@@ -28,6 +28,15 @@ class SessionFunctions {
 		});
 	}
 
+	static joinSession(userName, serverId, socketId, io) {
+		if (SessionManager.sessions.has(serverId)) {
+			var user = UserManager.createUser(userName, socketId);
+			user.sessionId = serverId;
+			SessionManager.sessions.get(serverId).users.push(user);
+			UpdateFunctions.updateFrontUsers(SessionManager.sessions.get(serverId), io);
+		}
+	}
+
 	static closeSession(socketId, io) {
 		var session = SessionManager.getSessionBySocketId(socketId);
 
@@ -37,15 +46,6 @@ class SessionFunctions {
 		UpdateFunctions.kickFrontUsers(session, io);
 		SessionManager.sessions.delete(session.sessionId);
 		SessionManager.setOfSessionIds.delete(session.sessionId);
-	}
-
-	static joinSession(userName, serverId, socketId, io) {
-		if (SessionManager.sessions.has(serverId)) {
-			var user = UserManager.createUser(userName, socketId);
-			user.sessionId = serverId;
-			SessionManager.sessions.get(serverId).users.push(user);
-			UpdateFunctions.updateFrontUsers(SessionManager.sessions.get(serverId), io);
-		}
 	}
 }
 

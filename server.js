@@ -7,6 +7,8 @@ const SessionFunctions = require("./SessionFunctions.js");
 const StoryFunctions = require("./StoryFunctions.js");
 const UpdateFunctions = require("./UpdateFunctions.js");
 const IntervalFunctions = require("./IntervalFunctions.js");
+const UserFunctions = require("./UserFunctions.js");
+
 var SessionManager = require('./SessionManager.js');
 
 SessionManager.sessions = new Map();
@@ -36,26 +38,26 @@ io.on("connection", function (socket) {
 		console.log("closeSessionRequest");
 		SessionFunctions.closeSession(socket.id, io);
 	});
-
 	socket.on("joinSessionRequest", (userName, serverId) => {
 		console.log("joinSessionRequest", userName, serverId);
 		SessionFunctions.joinSession(userName, serverId, socket.id, io);
 	});
-
+	socket.on("kickRequest", (userToKick) => {
+		console.log("kickRequest", userToKick);
+		UserFunctions.kickUser(userToKick, socket.id, io);
+	});
+	socket.on("passCreatorRequest", (userToPromote) => {
+		console.log("passCreatorRequest", userToPromote);
+		UserFunctions.promoteUser(userToPromote, socket.id, io);
+	});
 
 	socket.on("voteRequest", (voteValue) => console.log("voteRequest", voteValue));
 	socket.on("coffeeRequest", () => console.log("coffeeRequest"));
-	socket.on("kickRequest", (userToKick) => console.log("kickRequest", userToKick));
-	socket.on("passCreatorRequest", (userToPromote) => console.log("passCreatorRequest", userToPromote));
 	socket.on("startStoryRequest", (story) => console.log("startStoryRequest", story));
 	socket.on("createStoryRequest", (summary, issueId) => console.log("createStoryRequest", summary, issueId));
 	socket.on("finishStoryRequest", (story, finalScore) => console.log("finishStoryRequest", story, finalScore));
 	socket.on("markAsFutureRequest", (story) => console.log("markAsFutureRequest", story));
 	socket.on("revoteRequest", (story) => console.log("revoteRequest", story));
-	/*
-	socket.on("joinSessionRequest", (userName, serverId) => SessionFunctions.joinSession(userName, serverId));
-	socket.on("closeSession", (sessionId) => SessionFunctions.closeSession(sessionId));
-	*/
 	socket.on("disconnect", () => console.log("disconnect", socket.id));
 });
 

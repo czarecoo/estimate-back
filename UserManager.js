@@ -20,6 +20,7 @@ class UserManager {
 				}
 			}
 		}
+		return null;
 	}
 	static generateUserId() {
 		while (true) {

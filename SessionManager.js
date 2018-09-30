@@ -47,6 +47,7 @@ class SessionManager {
 				}
 			}
 		}
+		return null;
 	}
 }
 
