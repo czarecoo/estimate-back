@@ -37,7 +37,11 @@ io.on("connection", function (socket) {
 		SessionFunctions.closeSession(socket.id, io);
 	});
 
-	socket.on("joinSessionRequest", (creatorName, serverId) => console.log("joinSessionRequest", creatorName, serverId));
+	socket.on("joinSessionRequest", (userName, serverId) => {
+		console.log("joinSessionRequest", userName, serverId);
+		SessionFunctions.joinSession(userName, serverId, socket.id, io);
+	});
+
 
 	socket.on("voteRequest", (voteValue) => console.log("voteRequest", voteValue));
 	socket.on("coffeeRequest", () => console.log("coffeeRequest"));

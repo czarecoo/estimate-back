@@ -39,15 +39,12 @@ class SessionFunctions {
 		SessionManager.setOfSessionIds.delete(session.sessionId);
 	}
 
-	static joinSession(userName, serverId) {
-		var user = UserManager.createUser(userName);
+	static joinSession(userName, serverId, socketId, io) {
 		if (SessionManager.sessions.has(serverId)) {
+			var user = UserManager.createUser(userName, socketId);
 			user.sessionId = serverId;
 			SessionManager.sessions.get(serverId).users.push(user);
-			//io.emit("grejt dżojn my frind", greatJoin);
-		}
-		else {
-			//io.emit("you are so stupid... wrong server id, bitch", wrongJoin);
+			UpdateFunctions.updateFrontUsers(SessionManager.sessions.get(serverId), io);
 		}
 	}
 }
