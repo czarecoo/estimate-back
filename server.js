@@ -66,8 +66,12 @@ io.on("connection", function (socket) {
 		console.log("createStoryRequest", issueId, summary);
 		StoryFunctions.createStory(issueId, summary, socket.id, io);
 	});
+	socket.on("markAsFutureRequest", (story) => {
+		console.log("markAsFutureRequest", story)
+		StoryFunctions.markAsFuture(story, socket.id, io);
+	});
+
 	socket.on("finishStoryRequest", (story, finalScore) => console.log("finishStoryRequest", story, finalScore));
-	socket.on("markAsFutureRequest", (story) => console.log("markAsFutureRequest", story));
 	socket.on("revoteRequest", (story) => console.log("revoteRequest", story));
 	socket.on("disconnect", () => console.log("disconnect", socket.id));
 });

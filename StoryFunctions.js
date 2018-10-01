@@ -47,9 +47,12 @@ class StoryFunctions {
 		}
 	}
 
-	static coffee(sessionId, io) {
-		for (var user of SessionManager.sessions.get(sessionId).users) {
-			io.to(user.socketid).emit("coffeeResponse");
+	static markAsFuture(story, socketId, io) {
+		var session = SessionManager.getSessionBySocketId(socketId);
+		var storyToMark = StoryManager.getStoryFromSession(session, story);
+		if (storyToMark != null) {
+			storyToMark.tense = -1;
+			UpdateFunctions.updateFrontUsers(session, io);
 		}
 	}
 }
