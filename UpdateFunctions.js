@@ -1,3 +1,6 @@
+const SessionManager = require('./SessionManager.js');
+const UserManager = require('./UserManager.js');
+
 class UpdateFunctions {
 	static updateFrontUsers(session, io) {
 		for (var user of session.users) {
@@ -45,6 +48,15 @@ class UpdateFunctions {
 		io.to(user.socketId).emit("sessionClosingCommand");
 	}
 
+	static coffee(socketId, io) {
+		var userAskingForCoffee = UserManager.getUserBySocketId(socketId);
+		var session = SessionManager.getSessionBySocketId(socketId);
+		for (var user of session.users) {
+			if (user.socketId != socketId) {
+				io.to(user.socketId).emit("coffeeCommand", userAskingForCoffee.name);
+			}
+		}
+	}
 	static getStoriesWithTense(stories, wantedTense) {
 		var tempArray = [];
 		for (var i = 0; i < stories.length; i++) {

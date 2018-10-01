@@ -59,7 +59,10 @@ io.on("connection", function (socket) {
 		StoryFunctions.startStory(story, socket.id, io);
 	});
 
-	socket.on("coffeeRequest", () => console.log("coffeeRequest"));
+	socket.on("coffeeRequest", () => {
+		console.log("coffeeRequest");
+		UpdateFunctions.coffee(socket.id, io);
+	});
 
 	socket.on("createStoryRequest", (summary, issueId) => console.log("createStoryRequest", summary, issueId));
 	socket.on("finishStoryRequest", (story, finalScore) => console.log("finishStoryRequest", story, finalScore));
