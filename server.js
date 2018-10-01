@@ -58,13 +58,14 @@ io.on("connection", function (socket) {
 		console.log("startStoryRequest", story);
 		StoryFunctions.startStory(story, socket.id, io);
 	});
-
 	socket.on("coffeeRequest", () => {
 		console.log("coffeeRequest");
 		UpdateFunctions.coffee(socket.id, io);
 	});
-
-	socket.on("createStoryRequest", (summary, issueId) => console.log("createStoryRequest", summary, issueId));
+	socket.on("createStoryRequest", (summary, issueId) => {
+		console.log("createStoryRequest", issueId, summary);
+		StoryFunctions.createStory(issueId, summary, socket.id, io);
+	});
 	socket.on("finishStoryRequest", (story, finalScore) => console.log("finishStoryRequest", story, finalScore));
 	socket.on("markAsFutureRequest", (story) => console.log("markAsFutureRequest", story));
 	socket.on("revoteRequest", (story) => console.log("revoteRequest", story));

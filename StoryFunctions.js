@@ -2,6 +2,7 @@ const UpdateFunctions = require('./UpdateFunctions.js');
 const SessionManager = require('./SessionManager.js');
 const StoryManager = require('./StoryManager.js');
 const UserManager = require('./UserManager.js');
+const Story = require('./Story.js');
 
 class StoryFunctions {
 	static vote(voteValue, socketId, io) {
@@ -36,7 +37,14 @@ class StoryFunctions {
 			storyToStart.tense = 0;
 			UpdateFunctions.updateFrontUsers(session, io);
 		}
+	}
 
+	static createStory(issueId, summary, socketId, io) {
+		if (issueId != "" && summary != "") {
+			var session = SessionManager.getSessionBySocketId(socketId);
+			session.stories.push(new Story(issueId, summary));
+			UpdateFunctions.updateFrontUsers(session, io);
+		}
 	}
 
 	static coffee(sessionId, io) {
