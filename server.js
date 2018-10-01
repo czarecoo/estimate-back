@@ -70,8 +70,10 @@ io.on("connection", function (socket) {
 		console.log("markAsFutureRequest", story)
 		StoryFunctions.markAsFuture(story, socket.id, io);
 	});
-
-	socket.on("finishStoryRequest", (story, finalScore) => console.log("finishStoryRequest", story, finalScore));
+	socket.on("finishStoryRequest", (story, finalScore) => {
+		console.log("finishStoryRequest", story, finalScore);
+		StoryFunctions.finishStory(story, finalScore, socket.id, io);
+	});
 	socket.on("revoteRequest", (story) => console.log("revoteRequest", story));
 	socket.on("disconnect", () => console.log("disconnect", socket.id));
 });

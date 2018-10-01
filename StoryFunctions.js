@@ -55,5 +55,15 @@ class StoryFunctions {
 			UpdateFunctions.updateFrontUsers(session, io);
 		}
 	}
+
+	static finishStory(story, finalScore, socketId, io) {
+		var session = SessionManager.getSessionBySocketId(socketId);
+		var storyToFinish = StoryManager.getStoryFromSession(session, story);
+		if (storyToFinish != null) {
+			storyToFinish.tense = 1;
+			storyToFinish.finalScore = finalScore;
+			UpdateFunctions.updateFrontUsers(session, io);
+		}
+	}
 }
 module.exports = StoryFunctions;
