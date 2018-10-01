@@ -8,7 +8,7 @@ class JiraManager {
 			serverRoot: jiraUrl, user: jiraLogin, pass: jiraPassword, jql: 'project="' + jiraProject + '"', fields: '*all', expand: 'changelog', maxResults: 50, onTotal: function (total) { },
 			mapCallback: function (issue) {
 				if (issue.fields.customfield_10020 == null) {
-					return new Story(issue.id, issue.fields.summary, shorterSummary);
+					return new Story(issue.id, issue.fields.summary);
 				} else {
 					console.log("Rejecting: ", issue.id, " because it has estimate: ", issue.fields.customfield_10020);
 					return null;

@@ -59,9 +59,21 @@ class StoryFunctions {
 	static finishStory(story, finalScore, socketId, io) {
 		var session = SessionManager.getSessionBySocketId(socketId);
 		var storyToFinish = StoryManager.getStoryFromSession(session, story);
-		if (storyToFinish != null) {
+		if (storyToFinish != null && finalScore != 0) {
 			storyToFinish.tense = 1;
 			storyToFinish.finalScore = finalScore;
+			UpdateFunctions.updateFrontUsers(session, io);
+		}
+	}
+
+	static revoteStory(story, socketId, io) {
+		var session = SessionManager.getSessionBySocketId(socketId);
+		var storyToRevote = StoryManager.getStoryFromSession(session, story);
+		if (storyToRevote != null) {
+			storyToRevote.tense = -1;
+			storyToRevote.users = new Array();
+			storyToRevote.votes = new Array();
+			storyToRevote.finalScore = 0;
 			UpdateFunctions.updateFrontUsers(session, io);
 		}
 	}

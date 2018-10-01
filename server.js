@@ -74,9 +74,12 @@ io.on("connection", function (socket) {
 		console.log("finishStoryRequest", story, finalScore);
 		StoryFunctions.finishStory(story, finalScore, socket.id, io);
 	});
-	socket.on("revoteRequest", (story) => console.log("revoteRequest", story));
+	socket.on("revoteRequest", (story) => {
+		console.log("revoteRequest", story);
+		StoryFunctions.revoteStory(story, socket.id, io);
+	});
 	socket.on("disconnect", () => console.log("disconnect", socket.id));
 });
 
 IntervalFunctions.doPingRequest(io);
-//IntervalFunctions.doLogger(10000);
+IntervalFunctions.doLogger(5000);
