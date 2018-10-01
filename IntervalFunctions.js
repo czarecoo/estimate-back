@@ -30,13 +30,13 @@ class IntervalFunctions {
 			user.isActive = true;
 		}
 	}
-	static doLogger() {
+	static doLogger(time) {
 		var counter = 0;
 		setInterval(function () {
 			var mapOfSessions = SessionManager.sessions;
 			console.log(counter++);
 			console.log(util.inspect(mapOfSessions, false, null));
-		}, 5000);
+		}, time);
 	}
 }
 

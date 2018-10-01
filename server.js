@@ -50,10 +50,17 @@ io.on("connection", function (socket) {
 		console.log("passCreatorRequest", userToPromote);
 		UserFunctions.promoteUser(userToPromote, socket.id, io);
 	});
+	socket.on("voteRequest", (voteValue) => {
+		console.log("voteRequest", voteValue);
+		StoryFunctions.vote(voteValue, socket.id, io);
+	});
+	socket.on("startStoryRequest", (story) => {
+		console.log("startStoryRequest", story);
+		StoryFunctions.startStory(story, socket.id, io);
+	});
 
-	socket.on("voteRequest", (voteValue) => console.log("voteRequest", voteValue));
 	socket.on("coffeeRequest", () => console.log("coffeeRequest"));
-	socket.on("startStoryRequest", (story) => console.log("startStoryRequest", story));
+
 	socket.on("createStoryRequest", (summary, issueId) => console.log("createStoryRequest", summary, issueId));
 	socket.on("finishStoryRequest", (story, finalScore) => console.log("finishStoryRequest", story, finalScore));
 	socket.on("markAsFutureRequest", (story) => console.log("markAsFutureRequest", story));
@@ -62,4 +69,4 @@ io.on("connection", function (socket) {
 });
 
 IntervalFunctions.doPingRequest(io);
-IntervalFunctions.doLogger();
+//IntervalFunctions.doLogger(10000);

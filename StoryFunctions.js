@@ -1,64 +1,48 @@
 const UpdateFunctions = require('./UpdateFunctions.js');
 const SessionManager = require('./SessionManager.js');
+const StoryManager = require('./StoryManager.js');
+const UserManager = require('./UserManager.js');
 
-class StoryFunctions{
-    //te funkcje musza stąd znikanąć najlepiej do jakiejs klasy jako funkcje statyczne
-    static vote(story, voteVal, sessionId, io) {
-        //dodanie po stronie backu wszystkich informacji
-        UpdateFunctions.updateFrontUsers(SessionManager.sessions.get(sessionId), io);
-    }
+class StoryFunctions {
+	static vote(voteValue, socketId, io) {
+		var user = UserManager.getUserBySocketId(socketId);
+		var session = SessionManager.getSessionBySocketId(socketId);
+		var currentStory = StoryManager.getCurrentStory(session);
 
-    static coffee(sessionId, io) {
-        for (var user of SessionManager.sessions.get(sessionId).users) {
-            io.to(user.socketid).emit("coffeeResponse");
-        }
-    }
+		if (currentStory != null) {
+			var didThisPersonVotedBefore = false;
+			//we try to find the vote and overwrite it with new value
+			for (var i = 0; i < currentStory.users.length; i++) {
+				if (currentStory.users[i].userId == user.userId) {
+					currentStory.votes[i] = voteValue;
+					didThisPersonVotedBefore = true;
+					break;
+				}
+			}
+			//if user didnt vote before we simply add his vote
+			if (!didThisPersonVotedBefore) {
+				currentStory.users.push(user);
+				currentStory.votes.push(voteValue);
+			}
 
-    static kickUser(user, io) {
-        io.to(user.socketid).emit("kickUser");
-        for (var user of SessionManager.sessions.get(sessionId).users) {
-            updateFrontUser(user);
-        }
-    }
+			UpdateFunctions.updateFrontUsers(session, io);
+		}
+	}
 
-    static passCreator(story, sessionId, newCreator, io) {
-        if (SessionManager.sessions.has(sessionId)) {
-            for (var user of SessionManager.sessions.get(sessionId).users) {
-                if (user.name === newCreator.name) { //sprawdzamy czy jest taki user
-                    SessionManager.sessions.get(sessionId).creator = user;
-                }
-            }
-            UpdateFunctions.updateFrontUsers(SessionManager.sessions.get(sessionId), io);
-        }
-    }
+	static startStory(story, socketId, io) {
+		var session = SessionManager.getSessionBySocketId(socketId);
+		var storyToStart = StoryManager.getStoryFromSession(session, story);
+		if (storyToStart != null && StoryManager.getCurrentStory(session) == null) {
+			storyToStart.tense = 0;
+			UpdateFunctions.updateFrontUsers(session, io);
+		}
 
-    static finishStory(story, sessionId) {
+	}
 
-        updateFrontUsers(SessionManager.sessions.get(sessionId));
-    }
-
-    static markAsFuture(story, sessionId) {
-
-        updateFrontUsers(SessionManager.sessions.get(sessionId));
-    }
-
-    static revoteStory(story, sessionId) {
-
-        updateFrontUsers(SessionManager.sessions.get(sessionId));
-    }
-
-    static addEmptyStory(sessionId) { //jak dajemy empty to bez story
-
-        updateFrontUsers(SessionManager.sessions.get(sessionId));
-    }
-
-    static savesStory(story, sessionId) {
-
-        updateFrontUsers(SessionManager.sessions.get(sessionId));
-    }
-
-    static finalVote(story, sessionId) {
-
-        updateFrontUsers(SessionManager.sessions.get(sessionId));
-    }
+	static coffee(sessionId, io) {
+		for (var user of SessionManager.sessions.get(sessionId).users) {
+			io.to(user.socketid).emit("coffeeResponse");
+		}
+	}
 }
+module.exports = StoryFunctions;
