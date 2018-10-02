@@ -92,5 +92,6 @@ io.on("connection", function (socket) {
 	});
 });
 
-IntervalFunctions.doPingRequest(io);
-IntervalFunctions.doLogger(5000);
+IntervalFunctions.doPingRequest(io, 1000); //ask for activity confirmation every 1s
+IntervalFunctions.doLogger(5000); //print map of sessions every 5s
+IntervalFunctions.clearStaleSessions(10000); //check for stale sessions every 10s

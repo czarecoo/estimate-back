@@ -1,5 +1,5 @@
 const SessionManager = require('./SessionManager.js');
-const simpleid = require("simple-id");
+const User = require('./User.js');
 
 class UserManager {
 	static createCreator(userName, socketId) {
@@ -8,7 +8,7 @@ class UserManager {
 		return creator;
 	}
 	static createUser(userName, socketId) {
-		var user = { name: userName, userId: UserManager.generateUserId(), isActive: true, activityLevel: 5, isCreator: false, socketId: socketId };
+		var user = new User(userName, socketId)
 		return user;
 	}
 	static findUser(session, userName, userId) {
@@ -29,15 +29,6 @@ class UserManager {
 			}
 		}
 		return null;
-	}
-	static generateUserId() {
-		while (true) {
-			var id = simpleid(4, '6789');
-			if (!SessionManager.setOfUserIds.has(id)) {
-				SessionManager.setOfUserIds.add(id);
-				return id;
-			}
-		}
 	}
 }
 
