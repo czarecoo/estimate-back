@@ -32,8 +32,24 @@ class SessionFunctions {
 		if (SessionManager.sessions.has(serverId)) {
 			var user = UserManager.createUser(userName, socketId);
 			user.sessionId = serverId;
+			user.isActive = true;
+			user.activityLevel = 5;
 			SessionManager.sessions.get(serverId).users.push(user);
 			UpdateFunctions.updateFrontUsers(SessionManager.sessions.get(serverId), io);
+		}
+	}
+
+	static rejoinSession(userName, userId, sessionId, socketId, io) {
+		if (SessionManager.sessions.has(sessionId)) {
+			var session = SessionManager.sessions.get(sessionId);
+			var user = UserManager.findUser(session, userName, userId);
+			if (user != null && !user.isActive) {
+				UpdateFunctions.kickUser(user, io);
+				user.socketId = socketId;
+				user.isActive = true;
+				user.activityLevel = 5;
+				UpdateFunctions.updateFrontUsers(SessionManager.sessions.get(sessionId), io);
+			}
 		}
 	}
 
@@ -46,6 +62,14 @@ class SessionFunctions {
 		UpdateFunctions.kickFrontUsers(session, io);
 		SessionManager.sessions.delete(session.sessionId);
 		SessionManager.setOfSessionIds.delete(session.sessionId);
+	}
+
+	static leaveSession(socketId, io) {
+		var session = SessionManager.getSessionBySocketId(socketId);
+		var user = UserManager.getUserBySocketId(socketId);
+		SessionManager.removeUser(session, user);
+		UpdateFunctions.kickUser(user, io);
+		UpdateFunctions.updateFrontUsers(session, io);
 	}
 }
 

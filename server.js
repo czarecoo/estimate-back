@@ -38,9 +38,17 @@ io.on("connection", function (socket) {
 		console.log("closeSessionRequest");
 		SessionFunctions.closeSession(socket.id, io);
 	});
+	socket.on("leaveSessionRequest", () => {
+		console.log("leaveSessionRequest");
+		SessionFunctions.leaveSession(socket.id, io);
+	});
 	socket.on("joinSessionRequest", (userName, serverId) => {
 		console.log("joinSessionRequest", userName, serverId);
 		SessionFunctions.joinSession(userName, serverId, socket.id, io);
+	});
+	socket.on("rejoinSessionRequest", (userName, userId, sessionId) => {
+		console.log("rejoinSessionRequest", userName, userId, sessionId);
+		SessionFunctions.rejoinSession(userName, userId, sessionId, socket.id, io);
 	});
 	socket.on("kickRequest", (userToKick) => {
 		console.log("kickRequest", userToKick);
@@ -78,7 +86,10 @@ io.on("connection", function (socket) {
 		console.log("revoteRequest", story);
 		StoryFunctions.revoteStory(story, socket.id, io);
 	});
-	socket.on("disconnect", () => console.log("disconnect", socket.id));
+	socket.on("disconnect", () => {
+		console.log("disconnect", socket.id)
+		UserFunctions.setInactive(socket.id, io);
+	});
 });
 
 IntervalFunctions.doPingRequest(io);

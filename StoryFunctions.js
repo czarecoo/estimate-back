@@ -42,8 +42,10 @@ class StoryFunctions {
 	static createStory(issueId, summary, socketId, io) {
 		if (issueId != "" && summary != "") {
 			var session = SessionManager.getSessionBySocketId(socketId);
-			session.stories.push(new Story(issueId, summary));
-			UpdateFunctions.updateFrontUsers(session, io);
+			if (session != null) {
+				session.stories.push(new Story(issueId, summary));
+				UpdateFunctions.updateFrontUsers(session, io);
+			}
 		}
 	}
 

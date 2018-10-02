@@ -49,6 +49,14 @@ class SessionManager {
 		}
 		return null;
 	}
+	static removeUser(session, user) {
+		var users = session.users;
+		for (var i = 0; i < users.length; i++) {
+			if (user.userId == users[i].userId) {
+				users.splice(i, 1);
+			}
+		}
+	}
 }
 
 module.exports = SessionManager;

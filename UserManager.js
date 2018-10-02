@@ -11,6 +11,14 @@ class UserManager {
 		var user = { name: userName, userId: UserManager.generateUserId(), isActive: true, activityLevel: 5, isCreator: false, socketId: socketId };
 		return user;
 	}
+	static findUser(session, userName, userId) {
+		for (var user of session.users) {
+			if (user.name == userName && user.userId == userId) {
+				return user;
+			}
+		}
+		return null;
+	}
 	static getUserBySocketId(socketId) {
 		var mapOfSessions = SessionManager.sessions;
 		for (var session of mapOfSessions.values()) {

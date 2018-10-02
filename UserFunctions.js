@@ -1,14 +1,16 @@
 const UserManager = require('./UserManager.js');
-const JiraManager = require('./JiraManager.js');
 const SessionManager = require('./SessionManager.js');
 const UpdateFunctions = require('./UpdateFunctions.js');
 
 class UserFunctions {
 	static kickUser(userToKick, socketId, io) {
 		var userAskingToKick = UserManager.getUserBySocketId(socketId);
+		var session = SessionManager.getSessionBySocketId(socketId);
 		if (userAskingToKick != null) {
 			if (userAskingToKick.isCreator) {
-				UpdateFunctions.kickUser(userToKick, io)
+				SessionManager.removeUser(session, userToKick);
+				UpdateFunctions.kickUser(userToKick, io);
+				UpdateFunctions.updateFrontUsers(session, io);
 			}
 		}
 	}
@@ -22,6 +24,15 @@ class UserFunctions {
 				userToBePromoted.isCreator = true;
 				UpdateFunctions.updateFrontUsers(session, io);
 			}
+		}
+	}
+	static setInactive(socketId, io) {
+		var user = UserManager.getUserBySocketId(socketId);
+		var session = SessionManager.getSessionBySocketId(socketId);
+		if (user != null && session != null && user.isActive) {
+			user.isActive = false;
+			user.activityLevel = 0;
+			UpdateFunctions.updateFrontUsers(session, io);
 		}
 	}
 }
