@@ -9,8 +9,8 @@ class SessionFunctions {
 		var session = SessionManager.createSession(creator);
 		UpdateFunctions.updateFrontUsers(session, io);
 	}
-	static createSessionWithJira(userName, jiraLogin, jiraPassword, jiraUrl, jiraProject, socketId, io) {
-		var issuesPromise = JiraManager.getIssues(jiraLogin, jiraPassword, jiraUrl, jiraProject);
+	static createSessionWithJira(userName, jiraLogin, jiraPassword, jiraUrl, jiraProject, jiraProjectKey, socketId, io) {
+		var issuesPromise = JiraManager.getIssues(jiraLogin, jiraPassword, jiraUrl, jiraProjectKey, jiraProject);
 		var creator = UserManager.createCreator(userName, socketId);
 
 		issuesPromise.then((issues) => {
@@ -19,11 +19,7 @@ class SessionFunctions {
 					issues.splice(i, 1);
 				}
 			}
-			try {
-				var session = SessionManager.createSessionWithJira(creator, issues, jiraLogin, jiraPassword, jiraUrl, jiraProject);
-			} catch (ex) {
-				console.log("Exception: " + ex.constructor.name + ", message: " + ex.message);
-			}
+			var session = SessionManager.createSessionWithJira(creator, issues, jiraLogin, jiraPassword, jiraUrl, jiraProject, jiraProjectKey);
 			UpdateFunctions.updateFrontUsers(session, io);
 		});
 	}
@@ -55,10 +51,18 @@ class SessionFunctions {
 
 	static closeSession(socketId, io) {
 		var session = SessionManager.getSessionBySocketId(socketId);
-
-		//update jira issues
-		//JiraManager.updateJiraIssue(jiraUrl, jiraLogin, jiraPassword, "10004", update);
-
+		if (session.isJira) {
+			var stories = session.stories;
+			for (var i in session.stories) {
+				if (stories[i].tense == 1 && stories[i].finalScore != 0) {
+					if (stories[i].doesExist) {
+						JiraManager.updateJiraIssue(session.jiraUrl, session.jiraLogin, session.jiraPassword, stories[i].issueId, stories[i].finalScore);
+					} else {
+						JiraManager.createJiraIssue(session.jiraUrl, session.jiraLogin, session.jiraPassword, session.jiraProjectKey, stories[i].summary, stories[i].summary, stories[i].finalScore);
+					}
+				}
+			}
+		}
 		UpdateFunctions.kickFrontUsers(session, io);
 		SessionManager.sessions.delete(session.sessionId);
 		SessionManager.setOfSessionIds.delete(session.sessionId);

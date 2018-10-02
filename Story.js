@@ -1,7 +1,7 @@
 const MAX_CHARS_SHORT_SUMARY = 32;
 
 class Story {
-	constructor(issueId, summary) {
+	constructor(issueId, summary, doesExist) {
 		this.issueId = issueId;
 		this.summary = summary;
 		if (summary.length > MAX_CHARS_SHORT_SUMARY) {
@@ -13,6 +13,7 @@ class Story {
 		this.users = new Array();
 		this.votes = new Array();
 		this.finalScore = 0;
+		this.doesExist = doesExist;
 	}
 }
 module.exports = Story;

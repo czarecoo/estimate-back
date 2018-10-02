@@ -13,7 +13,7 @@ class SessionManager {
 		SessionManager.sessions.get(id).users.push(creator);
 		return SessionManager.sessions.get(id);
 	}
-	static createSessionWithJira(creator, issues, jiraLogin, jiraPassword, jiraUrl, jiraProject) {
+	static createSessionWithJira(creator, issues, jiraLogin, jiraPassword, jiraUrl, jiraProject, jiraProjectKey) {
 		var id = SessionManager.generateSessionId();
 		creator.sessionId = id;
 		SessionManager.sessions.set(id, {
@@ -24,7 +24,8 @@ class SessionManager {
 			jiraLogin: jiraLogin,
 			jiraPassword: jiraPassword,
 			jiraUrl: jiraUrl,
-			jiraProject: jiraProject
+			jiraProject: jiraProject,
+			jiraProjectKey: jiraProjectKey
 		});
 		SessionManager.sessions.get(id).users.push(creator);
 		return SessionManager.sessions.get(id);

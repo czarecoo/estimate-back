@@ -43,7 +43,7 @@ class StoryFunctions {
 		if (issueId != "" && summary != "") {
 			var session = SessionManager.getSessionBySocketId(socketId);
 			if (session != null) {
-				session.stories.push(new Story(issueId, summary));
+				session.stories.push(new Story(issueId, summary, false));
 				UpdateFunctions.updateFrontUsers(session, io);
 			}
 		}
@@ -63,7 +63,7 @@ class StoryFunctions {
 		var storyToFinish = StoryManager.getStoryFromSession(session, story);
 		if (storyToFinish != null && finalScore != 0) {
 			storyToFinish.tense = 1;
-			storyToFinish.finalScore = finalScore;
+			storyToFinish.finalScore = parseInt(finalScore, 10);
 			UpdateFunctions.updateFrontUsers(session, io);
 		}
 	}

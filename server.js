@@ -27,9 +27,9 @@ io.on("connection", function (socket) {
 		console.log("createSessionRequest", creatorName);
 		SessionFunctions.createSession(creatorName, socket.id, io);
 	});
-	socket.on("createSessionWithJiraRequest", (creatorName, jiraLogin, jiraPassword, jiraUrl, jiraProject) => {
-		console.log("createSessionWithJiraRequest", creatorName, jiraLogin, jiraPassword, jiraUrl, jiraProject);
-		SessionFunctions.createSessionWithJira(creatorName, jiraLogin, jiraPassword, jiraUrl, jiraProject, socket.id, io);
+	socket.on("createSessionWithJiraRequest", (creatorName, jiraLogin, jiraPassword, jiraUrl, jiraProject, jiraProjectKey) => {
+		console.log("createSessionWithJiraRequest", creatorName, jiraLogin, jiraPassword, jiraUrl, jiraProject, jiraProjectKey);
+		SessionFunctions.createSessionWithJira(creatorName, jiraLogin, jiraPassword, jiraUrl, jiraProject, jiraProjectKey, socket.id, io);
 	});
 	socket.on("activityResponse", () => {
 		IntervalFunctions.raiseActivity(socket.id);
