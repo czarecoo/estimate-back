@@ -19,6 +19,7 @@ class UpdateFunctions {
 			sessionId: session.sessionId,
 			isSuperUser: creator.isCreator,
 			currentStory: UpdateFunctions.getStoriesWithTense(session.stories, 0),
+			currentVote: UpdateFunctions.getVoteValue(session.stories, creator),
 			userList: session.users,
 			futureStories: UpdateFunctions.getStoriesWithTense(session.stories, -1),
 			pastStories: UpdateFunctions.getStoriesWithTense(session.stories, 1),
@@ -33,6 +34,7 @@ class UpdateFunctions {
 			sessionId: session.sessionId,
 			isSuperUser: user.isCreator,
 			currentStory: UpdateFunctions.getStoriesWithTense(session.stories, 0),
+			currentVote: UpdateFunctions.getVoteValue(session.stories, user),
 			userList: session.users,
 		}
 		io.to(user.socketId).emit("updateResponse", data);
@@ -65,6 +67,18 @@ class UpdateFunctions {
 			}
 		}
 		return tempArray;
+	}
+	static getVoteValue(stories, userToSearch) {
+		for (var i = 0; i < stories.length; i++) {
+			if (stories[i].tense == 0) {
+				for (var j = 0; j < stories[i].users.length; j++) {
+					if (stories[i].users[j].socketId == userToSearch.socketId) {
+						return stories[i].votes[j];
+					}
+				}
+			}
+		}
+		return null;
 	}
 }
 module.exports = UpdateFunctions;
