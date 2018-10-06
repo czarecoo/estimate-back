@@ -21,7 +21,9 @@ class SessionFunctions {
 			}
 			var session = SessionManager.createSessionWithJira(creator, issues, jiraLogin, jiraPassword, jiraUrl, jiraProject, jiraProjectKey);
 			UpdateFunctions.updateFrontUsers(session, io);
+			return;
 		});
+		UpdateFunctions.showErrorToSocketId(socketId, "Could not connect to jira with provided data.", io);
 	}
 
 	static joinSession(userName, serverId, socketId, io) {
@@ -32,6 +34,8 @@ class SessionFunctions {
 			user.activityLevel = 5;
 			SessionManager.sessions.get(serverId).users.push(user);
 			UpdateFunctions.updateFrontUsers(SessionManager.sessions.get(serverId), io);
+		} else {
+			UpdateFunctions.showErrorToSocketId(socketId, "Session: " + serverId + " does not exist", io);
 		}
 	}
 

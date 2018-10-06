@@ -42,12 +42,20 @@ class UpdateFunctions {
 
 	static kickFrontUsers(session, io) {
 		for (var user of session.users) {
-			io.to(user.socketId).emit("sessionClosingCommand");
+			UpdateFunctions.kickUser(user, io);
 		}
 	}
 
 	static kickUser(user, io) {
 		io.to(user.socketId).emit("sessionClosingCommand");
+	}
+
+	static showErrorToUser(user, msg, io) {
+		io.to(user.socketId).emit("errorCommand", msg);
+	}
+
+	static showErrorToSocketId(socketId, msg, io) {
+		io.to(socketId).emit("errorCommand", msg);
 	}
 
 	static coffee(socketId, io) {

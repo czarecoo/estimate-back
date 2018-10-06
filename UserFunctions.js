@@ -22,6 +22,7 @@ class UserFunctions {
 			if (userAskingToPromote.isCreator) {
 				userAskingToPromote.isCreator = false;
 				userToBePromoted.isCreator = true;
+				UpdateFunctions.showErrorToUser(userToPromote, "You have been promoted to session creator.", io);
 				UpdateFunctions.updateFrontUsers(session, io);
 			}
 		}

@@ -27,6 +27,8 @@ class StoryFunctions {
 			}
 
 			UpdateFunctions.updateFrontUsers(session, io);
+		} else {
+			UpdateFunctions.showErrorToSocketId(socketId, "There is no voting going on right now...", io);
 		}
 	}
 
@@ -36,6 +38,8 @@ class StoryFunctions {
 		if (storyToStart != null && StoryManager.getCurrentStory(session) == null) {
 			storyToStart.tense = 0;
 			UpdateFunctions.updateFrontUsers(session, io);
+		} else {
+			UpdateFunctions.showErrorToSocketId(socketId, "There can be only one vote at a time.", io);
 		}
 	}
 
@@ -46,6 +50,8 @@ class StoryFunctions {
 				session.stories.push(new Story(issueId, summary, false));
 				UpdateFunctions.updateFrontUsers(session, io);
 			}
+		} else {
+			UpdateFunctions.showErrorToSocketId(socketId, "Please provide both issueId and summary.", io);
 		}
 	}
 
@@ -65,6 +71,8 @@ class StoryFunctions {
 			storyToFinish.tense = 1;
 			storyToFinish.finalScore = parseInt(finalScore, 10);
 			UpdateFunctions.updateFrontUsers(session, io);
+		} else {
+			UpdateFunctions.showErrorToSocketId(socketId, "Please choose final score.", io);
 		}
 	}
 
