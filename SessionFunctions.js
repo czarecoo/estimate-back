@@ -21,9 +21,10 @@ class SessionFunctions {
 			}
 			var session = SessionManager.createSessionWithJira(creator, issues, jiraLogin, jiraPassword, jiraUrl, jiraProject, jiraProjectKey);
 			UpdateFunctions.updateFrontUsers(session, io);
-			return;
+		}).catch(function (error) {
+			UpdateFunctions.showErrorToSocketId(socketId, "Could not connect to jira with provided data.", io);
 		});
-		UpdateFunctions.showErrorToSocketId(socketId, "Could not connect to jira with provided data.", io);
+
 	}
 
 	static joinSession(userName, serverId, socketId, io) {
