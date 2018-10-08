@@ -1,19 +1,13 @@
-const MAX_CHARS_SHORT_SUMARY = 32;
-
 class Story {
-	constructor(issueId, summary, doesExist) {
-		this.issueId = issueId;
+	constructor(summary, description, doesExist, id) {
 		this.summary = summary;
-		if (summary.length > MAX_CHARS_SHORT_SUMARY) {
-			this.shortSummary = summary.substring(0, MAX_CHARS_SHORT_SUMARY) + "...";
-		} else {
-			this.shortSummary = summary;
-		}
+		this.description = description;
 		this.tense = -1;
 		this.users = new Array();
 		this.votes = new Array();
 		this.finalScore = 0;
 		this.doesExist = doesExist;
+		this.id = id;
 	}
 }
 module.exports = Story;

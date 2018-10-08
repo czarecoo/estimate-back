@@ -12,7 +12,7 @@ class StoryManager {
 	static getStoryFromSession(session, story) {
 		if (session != null) {
 			for (var i = 0; i < session.stories.length; i++) {
-				if (session.stories[i].summary == story.summary && session.stories[i].issueId == story.issueId) {
+				if (session.stories[i].summary == story.summary && session.stories[i].description == story.description) {
 					return session.stories[i];
 				}
 			}

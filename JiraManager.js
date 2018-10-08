@@ -7,20 +7,20 @@ class JiraManager {
 		return search({
 			serverRoot: jiraUrl, user: jiraLogin, pass: jiraPassword, jql: 'project="' + jiraProject + '"', fields: '*all', expand: 'changelog', maxResults: 50, onTotal: function (total) { },
 			mapCallback: function (issue) {
-				if (issue.fields.customfield_10020 == null) {
-					return new Story(issue.id, issue.fields.summary, true);
+				if (issue.fields.customfield_10015 == null) {
+					return new Story(issue.fields.summary, issue.fields.description, true, issue.id);
 				} else {
-					console.log("Rejecting: ", issue.id, " because it has estimate: ", issue.fields.customfield_10020);
+					console.log("Rejecting: ", issue.fields.summary, " because it has estimate: ", issue.fields.customfield_10015);
 					return null;
 				}
 			}
 		})
 	}
-	static updateJiraIssue(jiraUrl, jiraLogin, jiraPassword, issueIdOrKey, finalScore) {
-		var url = jiraUrl + "/rest/api/3/issue/" + issueIdOrKey;
+	static updateJiraIssue(jiraUrl, jiraLogin, jiraPassword, id, finalScore) {
+		var url = jiraUrl + "/rest/api/3/issue/" + id;
 		var update = {
 			"fields": {
-				"customfield_10020": finalScore,
+				"customfield_10015": finalScore,
 			}
 		};
 		return request({
@@ -35,7 +35,7 @@ class JiraManager {
 			console.log('body:', body); // Print the HTML for the Google homepage.);
 		});
 	}
-	static createJiraIssue(jiraUrl, jiraLogin, jiraPassword, projectKey, shortSummary, summary, finalScore) {
+	static createJiraIssue(jiraUrl, jiraLogin, jiraPassword, projectKey, summary, description, finalScore) {
 		var url = jiraUrl + "/rest/api/3/issue/";
 		var add = {
 			"fields": {
@@ -43,12 +43,26 @@ class JiraManager {
 				{
 					"key": projectKey
 				},
-				"summary": shortSummary,
+				"summary": summary,
 				"issuetype": {
-					"name": "Story",
-					"description": summary
+					"name": "Story"
 				},
-				"customfield_10020": finalScore
+				"description": {
+					"type": "doc",
+					"version": 1,
+					"content": [
+						{
+							"type": "paragraph",
+							"content": [
+								{
+									"type": "text",
+									"text": description
+								}
+							]
+						}
+					]
+				},
+				"customfield_10015": finalScore
 			}
 		};
 

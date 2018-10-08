@@ -70,9 +70,9 @@ io.on("connection", function (socket) {
 		console.log("coffeeRequest");
 		UpdateFunctions.coffee(socket.id, io);
 	});
-	socket.on("createStoryRequest", (summary, issueId) => {
-		console.log("createStoryRequest", issueId, summary);
-		StoryFunctions.createStory(issueId, summary, socket.id, io);
+	socket.on("createStoryRequest", (summary, description) => {
+		console.log("createStoryRequest", summary, description);
+		StoryFunctions.createStory(summary, description, socket.id, io);
 	});
 	socket.on("markAsFutureRequest", (story) => {
 		console.log("markAsFutureRequest", story)

@@ -43,15 +43,15 @@ class StoryFunctions {
 		}
 	}
 
-	static createStory(issueId, summary, socketId, io) {
-		if (issueId != "" && summary != "") {
+	static createStory(summary, description, socketId, io) {
+		if (description != "" && summary != "") {
 			var session = SessionManager.getSessionBySocketId(socketId);
 			if (session != null) {
-				session.stories.push(new Story(issueId, summary, false));
+				session.stories.push(new Story(summary, description, false));
 				UpdateFunctions.updateFrontUsers(session, io);
 			}
 		} else {
-			UpdateFunctions.showErrorToSocketId(socketId, "Please provide both issueId and summary.", io);
+			UpdateFunctions.showErrorToSocketId(socketId, "Please provide both summary and description.", io);
 		}
 	}
 
