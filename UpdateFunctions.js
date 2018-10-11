@@ -23,6 +23,7 @@ class UpdateFunctions {
 			userList: session.users,
 			futureStories: UpdateFunctions.getStoriesWithTense(session.stories, -1),
 			pastStories: UpdateFunctions.getStoriesWithTense(session.stories, 1),
+			isJira: session.isJira
 		}
 		io.to(creator.socketId).emit("updateResponse", data);
 	}
@@ -36,6 +37,7 @@ class UpdateFunctions {
 			currentStory: UpdateFunctions.getStoriesWithTense(session.stories, 0),
 			currentVote: UpdateFunctions.getVoteValue(session.stories, user),
 			userList: session.users,
+			isJira: session.isJira
 		}
 		io.to(user.socketId).emit("updateResponse", data);
 	}
